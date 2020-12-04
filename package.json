@@ -4,18 +4,19 @@
   "private": true,
   "dependencies": {
     "@tensorflow/tfjs": "^2.7.0",
-    "@tensorflow/tfjs-backend-wasm": "^2.7.0",
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.5.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "node": "^15.3.0",
+    "nodemon": "^2.0.6",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.1",
     "web-vitals": "^0.2.4"
   },
   "scripts": {
-    "wasm": "cp node_modules/@tensorflow/tfjs-backend-wasm/dist/tfjs-backend-wasm.wasm ./public",
-    "winwasm": "PowerShell -Command cp node_modules/@tensorflow/tfjs-backend-wasm/dist/tfjs-backend-wasm.wasm ./public -Force",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

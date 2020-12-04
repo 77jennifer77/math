@@ -1,5 +1,11 @@
 import "./index.css";
 import React, { Component } from 'react';
+import * as tf from '@tensorflow/tfjs';
+//import { bundleResourceIO } from '@tensorflow/tfjs-react-native';
+
+const modelJson = require('./model.json');
+const modelWeights = require('./group1-shard1of1.bin');
+
 class App extends Component {
   
   constructor(props){
@@ -12,6 +18,11 @@ class App extends Component {
     this.clear = this.clear.bind(this);
     this.predict = this.predict.bind(this);
     this.moving = this.moving.bind(this);
+  }
+
+  async componentDidMount(){
+    console.log(tf);
+    //const model = await tf.loadLayersModel(handler);
   }
 
   handleEvent = (event) => {
@@ -33,7 +44,8 @@ class App extends Component {
   predict(){
 
 
-    
+
+
     /* let downloadLink = document.createElement('a');
     downloadLink.setAttribute('download', 'CanvasAsImage.png');
     const canvas = this.canvasRef.current;
