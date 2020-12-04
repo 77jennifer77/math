@@ -1,23 +1,17 @@
-import logo from './logo.svg';
-import './App.css';
+import "./canvas.js";
+import "./index.css";
+import React from 'react';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+    <script src="canvas.js"></script>
+    	<h1>My Math Solver</h1>
+      <canvas id="canvas" width="600" height="400"></canvas>
+    	<div>
+    		<button id="clear" onClick={window.clearCanvas}>Clear</button>
+    		<button id="save">Save</button>
+    	</div>
     </div>
   );
 }
