@@ -1,6 +1,7 @@
 import "./canvas.js";
 import "./index.css";
 import React from 'react';
+import {clear} from "./clear.js";
 
 function App() {
   return (
@@ -9,7 +10,7 @@ function App() {
     	<h1>My Math Solver</h1>
       <canvas id="canvas" width="600" height="400"></canvas>
     	<div>
-    		<button id="clear" onClick={window.clearCanvas}>Clear</button>
+    		<button id="clear" onClick={clear}>Clear</button>
     		<button id="save">Save</button>
     	</div>
     </div>
