@@ -1,10 +1,6 @@
 import "./index.css";
 import React, { Component } from 'react';
 import * as tf from '@tensorflow/tfjs';
-//import { bundleResourceIO } from '@tensorflow/tfjs-react-native';
-
-const modelJson = require('./model.json');
-const modelWeights = require('./group1-shard1of1.bin');
 
 class App extends Component {
   
@@ -22,7 +18,7 @@ class App extends Component {
 
   async componentDidMount(){
     console.log(tf);
-    //const model = await tf.loadLayersModel(handler);
+    const model = await tf.loadLayersModel('https://storage.googleapis.com/mathsolvermodel/model.json');
   }
 
   handleEvent = (event) => {
@@ -42,10 +38,6 @@ class App extends Component {
   }
   
   predict(){
-
-
-
-
     /* let downloadLink = document.createElement('a');
     downloadLink.setAttribute('download', 'CanvasAsImage.png');
     const canvas = this.canvasRef.current;
