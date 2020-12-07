@@ -37,29 +37,26 @@ class App extends Component {
   split(n){
     const canvas = this.canvasRef.current;
     const ctx = canvas.getContext("2d");
-    const img_canvas = new Image();
-    img_canvas.src = canvas.toDataURL();
 
     const resizedCanvas = document.createElement("canvas");
     const resizedContext = resizedCanvas.getContext("2d");
     resizedCanvas.width = canvas.width/n;
+    resizedCanvas.height = 400;
 
     const splits = [];
     const img = new Image();
     for(var i = 0; i < n; i++){
-      resizedContext.drawImage(canvas, 0, i*resizedCanvas.width, (i+1)*resizedCanvas.width, canvas.height );
+      const Image_data = ctx.getImageData(i*canvas.width/n, 0, 300, 400);
+      resizedContext.putImageData(Image_data,0,0);
       img.src = resizedCanvas.toDataURL();
 
-
-
-      let downloadLink = document.createElement('a');
+      /*let downloadLink = document.createElement('a');
       downloadLink.setAttribute('download', 'CanvasAsImage.png');
       resizedCanvas.toBlob(function(blob) {
         let url = URL.createObjectURL(blob);
         downloadLink.setAttribute('href', url);
         downloadLink.click();
-      });
-
+      });*/
 
       splits.push(img);
     }
@@ -88,7 +85,7 @@ class App extends Component {
     const model = await tf.loadLayersModel('https://storage.googleapis.com/mathsolvermodel/model.json');
     const canvas = this.canvasRef.current;
 
-    const split_images = this.split(1);
+    const split_images = this.split(2);
     const resized_images = this.rescaled(split_images);
     console.log(resized_images);
 
