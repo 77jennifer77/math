@@ -9,24 +9,21 @@ class App extends Component {
     this.state= {
       lastPosition:null,
       drawing:false,
+      prediction:null,
     };
     this.canvasRef = React.createRef();
     this.clear = this.clear.bind(this);
     this.predict = this.predict.bind(this);
     this.moving = this.moving.bind(this);
-  }
-
-  async componentDidMount(){
-    console.log(tf);
-    const model = await tf.loadLayersModel('https://storage.googleapis.com/mathsolvermodel/model.json');
+    this.split = this.split.bind(this);
+    this.rescaled = this.rescaled.bind(this);
   }
 
   handleEvent = (event) => {
-    if (event.type === "mousedown") {
-           this.setState({ drawing: true});
-       } else {
-           this.setState({ drawing: false});
-       }
+    if (event.type === "mousedown")
+      this.setState({ drawing: true});
+    else
+      this.setState({ drawing: false});
    }
 
   clear() {
@@ -37,35 +34,52 @@ class App extends Component {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
 
+  split(n){
+    const canvas = this.canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    const width = canvas.width/n;
+    const splits = [];
+
+    const img = new Image();
+    for(var i = 0; i < n; i++){
+      ctx.drawImage(canvas, i*width, 0, (i+1)*width, canvas.height );
+      img.src = canvas.toDataURL();
+      splits.push(img);
+    }
+    console.log(splits);
+    return splits; //returns an array of Elemets <img>
+  }
+
+  rescaled(arr){
+    const rescaled = [];
+    const img = new Image();
+    const resizedCanvas = document.createElement("canvas");
+    const resizedContext = resizedCanvas.getContext("2d");
+    resizedCanvas.height = "32";
+    resizedCanvas.width = "32";
+    arr.forEach((image) => {
+      console.log(image);
+      resizedContext.drawImage(image, 0, 0, 32, 32);
+      img.src = resizedCanvas.toDataURL();
+      rescaled.push(img);
+    });
+    console.log(rescaled);
+    return rescaled;
+  }
+
   async predict(){
     const model = await tf.loadLayersModel('https://storage.googleapis.com/mathsolvermodel/model.json');
     const canvas = this.canvasRef.current;
 
-    // resizing code
-    var resizedCanvas = document.createElement("canvas");
-    var resizedContext = resizedCanvas.getContext("2d");
+    const split_images = this.split(1);
+    const resized_images = this.rescaled(split_images);
+    console.log(resized_images);
 
-    resizedCanvas.height = "32";
-    resizedCanvas.width = "32";
+    //const resized_grayscale_Tensor = tf.browser.fromPixels(resizedCanvas).mean(2).toFloat().expandDims(0).expandDims(-1);
+    //const prediction = model.predict(resized_grayscale_Tensor);
+    //const value = prediction.dataSync()
 
-    resizedContext.drawImage(canvas, 0, 0, 32, 32);
-    var myResizedData = resizedCanvas.toDataURL();
-    // document.body.appendChild(resizedCanvas);
-
-     const resized_grayscale_Tensor = tf.browser.fromPixels(resizedCanvas)
-    .mean(2)
-    .toFloat()
-    .expandDims(0)
-    .expandDims(-1);
-
-    console.log(resized_grayscale_Tensor);
-
-    var prediction = model.predict(resized_grayscale_Tensor);
-
-    var value = prediction.dataSync()
-
-    console.log(value)
-
+    //console.log(value);
   }
 
   moving(e) {
@@ -95,6 +109,7 @@ class App extends Component {
         <canvas ref={this.canvasRef} width="600" height="400" onMouseMove={e => this.moving(e)} onMouseUp={this.handleEvent} onMouseDown={this.handleEvent}> </canvas>
         <button onClick={this.clear}>Clear</button>
         <button onClick={this.predict}>Predict</button>
+        <h2>{this.state.prediction}</h2>
       </div>
     );
   }
