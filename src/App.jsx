@@ -107,8 +107,10 @@ class App extends Component {
       <div>
         <h1>My Math Solver</h1>
         <canvas ref={this.canvasRef} width="600" height="400" onMouseMove={e => this.moving(e)} onMouseUp={this.handleEvent} onMouseDown={this.handleEvent}> </canvas>
-        <button onClick={this.clear}>Clear</button>
-        <button onClick={this.predict}>Predict</button>
+        <div className="stuffs">
+          <button onClick={this.clear}>Clear</button>
+          <button onClick={this.predict}>Predict</button>
+        </div>
         <h2>{this.state.prediction}</h2>
       </div>
     );

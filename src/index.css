@@ -5,6 +5,15 @@ h1 {
 
 canvas {
   border: solid 2px black;
+  display: block;
   position: relative;
-  margin-left:25%;
+  left:27.5%;
+}
+
+.stuffs{
+  text-align: center;
+}
+
+h2{
+  text-align: center;
 }
