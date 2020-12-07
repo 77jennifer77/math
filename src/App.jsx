@@ -14,11 +14,7 @@ class App extends Component {
     this.clear = this.clear.bind(this);
     this.predict = this.predict.bind(this);
     this.moving = this.moving.bind(this);
-  }
-
-  async componentDidMount(){
-    console.log(tf);
-    const model = await tf.loadLayersModel('https://storage.googleapis.com/mathsolvermodel/model.json');
+    this.split = this.split.bind(this);
   }
 
   handleEvent = (event) => {
@@ -28,6 +24,22 @@ class App extends Component {
            this.setState({ drawing: false});
        }
    }
+
+  split(n){
+    const canvas = this.canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width/n;
+    const splits = [];
+
+    const img = new Image();
+    for(var i = 0; i < n-1; i++){
+      //ctx.drawimage(this/*img*/, i*width, 0, (i+1)*width, canvas.height );
+      img.src = canvas.toDataURL();
+      splits.push(img);
+    }
+    console.log(splits);
+    return splits; //returns an array of Elemets <img>
+  }
 
   clear() {
     const canvas = this.canvasRef.current;
@@ -40,27 +52,10 @@ class App extends Component {
   async predict(){
     const model = await tf.loadLayersModel('https://storage.googleapis.com/mathsolvermodel/model.json');
     const canvas = this.canvasRef.current;
+    this.split(2);
 
-    canvas.width = "32px"
-    canvas.height = "32px"
-
-    /*
-    var ctx = canvas.getContext('2d');
-
-    var imgCanvas = this.canvasRef.current;
-
-    var imgCtx = imgCanvas.getContext('2d');
-
-    //var imgURL = 
-    var img = new Image;
-    img.src = canvas.toDataURL("inputIMG/png");
-
-    imgCtx.drawImage(img, 32, 32); 
-    ctx.drawImage(imgCanvas, 32,32)
-
-    console.log(ctx);
-    */
-    
+    canvas.width = 32
+    canvas.height = 32
  
      const resized_grayscale_Tensor = tf.browser.fromPixels(canvas)
     .mean(2)
@@ -76,9 +71,6 @@ class App extends Component {
       downloadLink.setAttribute('href', url);
       downloadLink.click();
     });
-
-    //canvas.width = 600
-    //canvas.height = 400
 
     console.log(resized_grayscale_Tensor);
 
