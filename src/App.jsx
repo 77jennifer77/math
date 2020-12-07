@@ -37,16 +37,34 @@ class App extends Component {
   split(n){
     const canvas = this.canvasRef.current;
     const ctx = canvas.getContext("2d");
-    const width = canvas.width/n;
-    const splits = [];
+    const img_canvas = new Image();
+    img_canvas.src = canvas.toDataURL();
 
+    const resizedCanvas = document.createElement("canvas");
+    const resizedContext = resizedCanvas.getContext("2d");
+    resizedCanvas.width = canvas.width/n;
+
+    const splits = [];
     const img = new Image();
     for(var i = 0; i < n; i++){
-      ctx.drawImage(canvas, i*width, 0, (i+1)*width, canvas.height );
-      img.src = canvas.toDataURL();
+      resizedContext.drawImage(canvas, 0, i*resizedCanvas.width, (i+1)*resizedCanvas.width, canvas.height );
+      img.src = resizedCanvas.toDataURL();
+
+
+
+      let downloadLink = document.createElement('a');
+      downloadLink.setAttribute('download', 'CanvasAsImage.png');
+      resizedCanvas.toBlob(function(blob) {
+        let url = URL.createObjectURL(blob);
+        downloadLink.setAttribute('href', url);
+        downloadLink.click();
+      });
+
+
       splits.push(img);
     }
     console.log(splits);
+
     return splits; //returns an array of Elemets <img>
   }
 
@@ -58,7 +76,6 @@ class App extends Component {
     resizedCanvas.height = "32";
     resizedCanvas.width = "32";
     arr.forEach((image) => {
-      console.log(image);
       resizedContext.drawImage(image, 0, 0, 32, 32);
       img.src = resizedCanvas.toDataURL();
       rescaled.push(img);
@@ -75,11 +92,12 @@ class App extends Component {
     const resized_images = this.rescaled(split_images);
     console.log(resized_images);
 
-    //const resized_grayscale_Tensor = tf.browser.fromPixels(resizedCanvas).mean(2).toFloat().expandDims(0).expandDims(-1);
-    //const prediction = model.predict(resized_grayscale_Tensor);
-    //const value = prediction.dataSync()
+    const resized_grayscale_Tensor = tf.browser.fromPixels(resized_images[0]).mean(2).toFloat().expandDims(0).expandDims(-1);
+    console.log(resized_grayscale_Tensor);
+    const prediction = model.predict(resized_grayscale_Tensor);
+    const value = prediction.dataSync()
 
-    //console.log(value);
+    console.log(value);
   }
 
   moving(e) {
