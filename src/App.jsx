@@ -2,6 +2,7 @@ import "./index.css";
 import React, { Component } from 'react';
 import * as tf from '@tensorflow/tfjs';
 
+
 class App extends Component {
 
   constructor(props){
@@ -68,13 +69,13 @@ class App extends Component {
       resizedContext.drawImage(await arr[i], 0, 0, 32, 32);
       img.src = await resizedCanvas.toDataURL();
 
-      let downloadLink = document.createElement('a');
+/*       let downloadLink = document.createElement('a');
       downloadLink.setAttribute('download', 'CanvasAsImage.png');
       resizedCanvas.toBlob((blob) => {
         let url = URL.createObjectURL(blob);
         downloadLink.setAttribute('href', url);
         downloadLink.click();
-      });
+      }); */
       rescaled.push(img);
     }
     console.log(rescaled)
@@ -83,15 +84,70 @@ class App extends Component {
 
   async predict(){ 
     const model = await tf.loadLayersModel('https://storage.googleapis.com/mathsolvermodel/model.json');
+    
+    var split_count = 4;
+    var counter_1 = 0;
+    var counter_2 = 0;
+    var counter_3 = 0;
+    var counter_4 = 0;
+    var threshold = 0.9;
+    
+    
+    var split_images = [];
+    var resized_images = [];
 
-    const split_images = await this.split(1);
-    const resized_images = await this.rescaled(split_images);
+    var resized_grayscale_Tensor = null;
+    var prediction = null;
+    var value = [];
 
-    const resized_grayscale_Tensor = tf.browser.fromPixels(resized_images[0]).mean(2).toFloat().expandDims(0).expandDims(-1);
-    const prediction = model.predict(resized_grayscale_Tensor);
-    const value = prediction.dataSync()
+    
+    for(let i = 1; i < split_count+1; i++){
+      split_images = await this.split(i);
+      resized_images = await this.rescaled(split_images);
+        for (let j = 0; j < resized_images.length; j++){
+          resized_grayscale_Tensor = tf.browser.fromPixels(resized_images[j]).mean(2).toFloat().expandDims(0).expandDims(-1);
+          prediction = model.predict(resized_grayscale_Tensor);
+          value = prediction.dataSync()
+          //console.log(value);
+          for (let k = 0; k < value.length; k++){
 
-    console.log(value);
+            switch (i){
+              case 1: 
+                if (value[k] > threshold){
+                  console.log(value);
+                  counter_1++;
+                  console.log(counter_1);
+                }
+                break;
+              case 2: 
+                if (value[k] > threshold){
+                  //console.log(value);
+                  counter_2++;
+                  console.log(counter_2);
+                }
+                break;
+              case 3: 
+                if (value[k] > threshold){
+                  //console.log(value);
+                  counter_3++;
+                  console.log(counter_3);
+                }
+                break;
+              case 4: 
+                if (value[k] > threshold){
+                  //console.log(value);
+                  counter_4++;
+                  console.log(counter_4);
+                }
+                break;
+                
+            }      
+          }
+        }
+      }
+    
+
+    
   }
 
   moving(e) {
