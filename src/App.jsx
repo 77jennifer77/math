@@ -58,7 +58,7 @@ class App extends Component {
 
   async rescaled(arr){
     const rescaled = [];
-    const img = new Image(32,32);
+    var img = new Image(32,32);
     const resizedCanvas = document.createElement("canvas");
     const resizedContext = resizedCanvas.getContext("2d");
     resizedCanvas.height = 32;
@@ -66,18 +66,15 @@ class App extends Component {
 
     for(let i = 0; i < arr.length; i++){
       resizedContext.drawImage(await arr[i], 0, 0, 32, 32);
-      img.src = resizedCanvas.toDataURL();
+      img.src = await resizedCanvas.toDataURL();
 
       let downloadLink = document.createElement('a');
       downloadLink.setAttribute('download', 'CanvasAsImage.png');
-  
-      await resizedCanvas.toBlob((blob) => {
+      resizedCanvas.toBlob((blob) => {
         let url = URL.createObjectURL(blob);
         downloadLink.setAttribute('href', url);
         downloadLink.click();
       });
-
-
       rescaled.push(img);
     }
     console.log(rescaled)
@@ -89,9 +86,6 @@ class App extends Component {
 
     const split_images = await this.split(1);
     const resized_images = await this.rescaled(split_images);
-
-    var img = document.getElementsByClassName("t");
-    console.log(resized_images);
 
     const resized_grayscale_Tensor = tf.browser.fromPixels(resized_images[0]).mean(2).toFloat().expandDims(0).expandDims(-1);
     const prediction = model.predict(resized_grayscale_Tensor);
