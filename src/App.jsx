@@ -1,6 +1,7 @@
 import "./index.css";
 import React, { Component } from 'react';
 import * as tf from '@tensorflow/tfjs';
+import { image } from "@tensorflow/tfjs";
 
 class App extends Component {
 
@@ -46,17 +47,10 @@ class App extends Component {
     const splits = [];
     const img = new Image();
     for(var i = 0; i < n; i++){
-      const Image_data = ctx.getImageData(i*canvas.width/n, 0, 300, 400);
+      const Image_data = ctx.getImageData(i*canvas.width/n, 0, 600/n, 400);
       resizedContext.putImageData(Image_data,0,0);
       img.src = resizedCanvas.toDataURL();
 
-      /*let downloadLink = document.createElement('a');
-      downloadLink.setAttribute('download', 'CanvasAsImage.png');
-      resizedCanvas.toBlob(function(blob) {
-        let url = URL.createObjectURL(blob);
-        downloadLink.setAttribute('href', url);
-        downloadLink.click();
-      });*/
 
       splits.push(img);
     }
@@ -70,22 +64,29 @@ class App extends Component {
     const img = new Image();
     const resizedCanvas = document.createElement("canvas");
     const resizedContext = resizedCanvas.getContext("2d");
-    resizedCanvas.height = "32";
-    resizedCanvas.width = "32";
-    arr.forEach((image) => {
-      resizedContext.drawImage(image, 0, 0, 32, 32);
+    resizedCanvas.height = 32;
+    resizedCanvas.width = 32;
+    for(var i=0; i<arr.length;i++){ //arr.forEach((image) => 
+      resizedContext.drawImage(arr[i], 0, 0, 32, 32);
       img.src = resizedCanvas.toDataURL();
+      let downloadLink = document.createElement('a');
+      downloadLink.setAttribute('download', 'CanvasAsImage.png');
+      resizedCanvas.toBlob(function(blob) {
+        let url = URL.createObjectURL(blob);
+        downloadLink.setAttribute('href', url);
+        downloadLink.click();
+      });
       rescaled.push(img);
-    });
+    }
     console.log(rescaled);
     return rescaled;
   }
 
-  async predict(){
+  async predict(){ 
     const model = await tf.loadLayersModel('https://storage.googleapis.com/mathsolvermodel/model.json');
     const canvas = this.canvasRef.current;
 
-    const split_images = this.split(2);
+    const split_images = this.split(1);
     const resized_images = this.rescaled(split_images);
     console.log(resized_images);
 
