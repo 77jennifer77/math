@@ -1,6 +1,7 @@
 import "./index.css";
 import React, { Component } from 'react';
 import * as tf from '@tensorflow/tfjs';
+import { valueAndGrads } from "@tensorflow/tfjs";
 
 
 class App extends Component {
@@ -45,8 +46,8 @@ class App extends Component {
     resizedCanvas.height = 400;
 
     const splits = [];
-    const img = new Image(600/n,400);
     for(var i = 0; i < n; i++){
+      var img = new Image(600/n,400);
       const Image_data = await ctx.getImageData(i*canvas.width/n, 0, 600/n, 400);
       resizedContext.putImageData(Image_data,0,0);
       img.src = resizedCanvas.toDataURL();
@@ -59,26 +60,27 @@ class App extends Component {
 
   async rescaled(arr){
     const rescaled = [];
-    var img = new Image(32,32);
+
     const resizedCanvas = document.createElement("canvas");
     const resizedContext = resizedCanvas.getContext("2d");
     resizedCanvas.height = 32;
     resizedCanvas.width = 32;
 
     for(let i = 0; i < arr.length; i++){
-      resizedContext.drawImage(await arr[i], 0, 0, 32, 32);
-      img.src = await resizedCanvas.toDataURL();
-
-/*       let downloadLink = document.createElement('a');
+      var img = new Image(32,32);
+      resizedContext.drawImage(await arr[i],0,0,32,32);
+      img.src = resizedCanvas.toDataURL();
+      let downloadLink = document.createElement('a');
       downloadLink.setAttribute('download', 'CanvasAsImage.png');
       resizedCanvas.toBlob((blob) => {
         let url = URL.createObjectURL(blob);
         downloadLink.setAttribute('href', url);
         downloadLink.click();
-      }); */
+      });
+      resizedContext.clearRect(0,0,32,32);
       rescaled.push(img);
     }
-    console.log(rescaled)
+    console.log(rescaled);
     return rescaled;
   }
 
@@ -104,17 +106,19 @@ class App extends Component {
     for(let i = 1; i < split_count+1; i++){
       split_images = await this.split(i);
       resized_images = await this.rescaled(split_images);
+      console.log(resized_images);
+      console.log("above you");
         for (let j = 0; j < resized_images.length; j++){
           resized_grayscale_Tensor = tf.browser.fromPixels(resized_images[j]).mean(2).toFloat().expandDims(0).expandDims(-1);
           prediction = model.predict(resized_grayscale_Tensor);
-          value = prediction.dataSync()
-          //console.log(value);
+          value = prediction.dataSync();
           for (let k = 0; k < value.length; k++){
 
             switch (i){
               case 1: 
                 if (value[k] > threshold){
-                  console.log(value);
+                  //console.log(value);
+                  //console.log("in 1")
                   counter_1++;
                   console.log(counter_1);
                 }
@@ -122,6 +126,7 @@ class App extends Component {
               case 2: 
                 if (value[k] > threshold){
                   //console.log(value);
+                  //console.log("in 2")
                   counter_2++;
                   console.log(counter_2);
                 }
@@ -129,6 +134,7 @@ class App extends Component {
               case 3: 
                 if (value[k] > threshold){
                   //console.log(value);
+                  //console.log("in 3")
                   counter_3++;
                   console.log(counter_3);
                 }
@@ -136,15 +142,31 @@ class App extends Component {
               case 4: 
                 if (value[k] > threshold){
                   //console.log(value);
+                  //console.log("in 4")
                   counter_4++;
                   console.log(counter_4);
                 }
                 break;
-                
             }      
           }
         }
       }
+
+      /*if(counter_1_max)
+      this.split(n);
+      value;
+      for(i < images length n){
+        predictions
+        valueAndGrads;
+        for(values){
+          store[] =  index > theshold
+        }
+      }
+
+      ch['1','2'......')'];
+
+      for(store.length)
+        char[store]*/
     
 
     
