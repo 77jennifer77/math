@@ -5,7 +5,6 @@ import { valueAndGrads } from "@tensorflow/tfjs";
 
 
 class App extends Component {
-
   constructor(props){
     super(props);
     this.state= {
@@ -84,17 +83,17 @@ class App extends Component {
     return rescaled;
   }
 
-  async predict(){ 
+  async predict(){
     const model = await tf.loadLayersModel('https://storage.googleapis.com/mathsolvermodel/model.json');
-    
+
     var split_count = 4;
     var counter_1 = 0;
     var counter_2 = 0;
     var counter_3 = 0;
     var counter_4 = 0;
     var threshold = 0.9;
-    
-    
+
+
     var split_images = [];
     var resized_images = [];
 
@@ -104,7 +103,7 @@ class App extends Component {
     var counter_arr = [];
 
 
-    
+
     for(let i = 1; i < split_count+1; i++){
       split_images = await this.split(i);
       resized_images = await this.rescaled(split_images);
@@ -114,70 +113,102 @@ class App extends Component {
           resized_grayscale_Tensor = tf.browser.fromPixels(resized_images[j]).mean(2).toFloat().expandDims(0).expandDims(-1);
           prediction = model.predict(resized_grayscale_Tensor);
           value = prediction.dataSync();
+          console.log('split', i, 'image len', j, value)
+          console.log('trying', Math.max(...value))
           for (let k = 0; k < value.length; k++){
             switch (i){
-              case 1: 
+              case 1:
                 if (value[k] > threshold){
-                  //console.log(value);
+                  console.log('greater than thresh',value[k]);
                   //console.log("in 1")
                   counter_1++;
-                  console.log(counter_1);
+                  console.log('counter_1',counter_1);
                 }
-                counter_arr.push(parseInt(counter_1));
                 break;
-              case 2: 
+              case 2:
                 if (value[k] > threshold){
                   //console.log(value);
                   //console.log("in 2")
                   counter_2++;
                   console.log(counter_2);
                 }
-                counter_arr.push(parseInt(counter_2));
                 break;
-              case 3: 
+              case 3:
                 if (value[k] > threshold){
                   //console.log(value);
                   //console.log("in 3")
                   counter_3++;
                   console.log(counter_3);
                 }
-                counter_arr.push(parseInt(counter_3));
                 break;
-              case 4: 
+              case 4:
                 if (value[k] > threshold){
                   //console.log(value);
                   //console.log("in 4")
                   counter_4++;
                   console.log(counter_4);
                 }
-                counter_arr.push(parseInt(counter_4));
                 break;
-            }      
+            }
           }
         }
+        console.log('counter pls', counter_arr);
       }
-      
-      var max_counter_index = counter_arr.indexOf(Math.max(counter_arr));
+      counter_arr.push(parseInt(counter_1));
+      counter_arr.push(parseInt(counter_2));
+      counter_arr.push(parseInt(counter_3));
+      counter_arr.push(parseInt(counter_4));
 
+      var max_counter_index = counter_arr.indexOf(Math.max(...counter_arr));
+      var characters = ['0','1','2','3','4','5','6','7','8','9','-','+','*','(',')','y','=']
+      var val = []
       switch(max_counter_index){
-        case(0): 
-          var split_images_1 = this.split(max_counter_index);
+        case(0):
+          var split_images_1 = await this.split(max_counter_index);
           var resized_images_1 = await this.rescaled(split_images_1);
-          
+          for (let j = 0; j < resized_images_1.length; j++){
+            var resized = tf.browser.fromPixels(resized_images_1[j]).mean(2).toFloat().expandDims(0).expandDims(-1);
+            var pred = model.predict(resized);
+            val = pred.dataSync();
+          }
+          console.log('final prediction:', characters[val.indexOf(Math.max(...val))],'accuracy:',Math.max(...val))
+          break;
         case(1):
-          var split_images_2 = this.split(max_counter_index);
+          var split_images_2 = await this.split(max_counter_index);
           var resized_images_2 = await this.rescaled(split_images_2);
+          for (let j = 0; j < resized_images_2.length; j++){
+            var resized= tf.browser.fromPixels(resized_images_2[j]).mean(2).toFloat().expandDims(0).expandDims(-1);
+            var pred = model.predict(resized);
+            val = pred.dataSync();
+          }
+          console.log('final prediction:', characters[val.indexOf(Math.max(...val))],'accuracy:',Math.max(...val))
+          break;
 
         case(2):
-          var split_images_3 = this.split(max_counter_index);
+          var split_images_3 = await this.split(max_counter_index);
           var resized_images_3 = await this.rescaled(split_images_3);
-
+          for (let j = 0; j < resized_images_3.length; j++){
+            var resized = tf.browser.fromPixels(resized_images_3[j]).mean(2).toFloat().expandDims(0).expandDims(-1);
+            var pred = model.predict(resized);
+            val = pred.dataSync();
+          }
+          console.log('final prediction:', characters[val.indexOf(Math.max(...val))],'accuracy:',Math.max(...val))
+          break;
         case(3):
-          var split_images_4 = this.split(max_counter_index);
+          var split_images_4 = await this.split(max_counter_index);
+          console.log('trying to split',split_images_4)
           var resized_images_4 = await this.rescaled(split_images_4);
-
+          console.log('checking resize imag', resized_images_4.length)
+          for (let j = 0; j < resized_images_4.length; j++){
+            var resized = tf.browser.fromPixels(resized_images_4[j]).mean(2).toFloat().expandDims(0).expandDims(-1);
+            var pred = model.predict(resized);
+            val = pred.dataSync();
+          }
+          // console.log('max',Math.max(...val))
+          console.log('final prediction:', characters[val.indexOf(Math.max(...val))],'accuracy:',Math.max(...val))
+          break;
         }
-      
+
 /*       if(counter_arr)
       this.split(n);
       value;
