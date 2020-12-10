@@ -69,13 +69,6 @@ class App extends Component {
       var img = new Image(32,32);
       resizedContext.drawImage(await arr[i],0,0,32,32);
       img.src = resizedCanvas.toDataURL();
-      let downloadLink = document.createElement('a');
-      downloadLink.setAttribute('download', 'CanvasAsImage.png');
-      resizedCanvas.toBlob((blob) => {
-        let url = URL.createObjectURL(blob);
-        downloadLink.setAttribute('href', url);
-        downloadLink.click();
-      });
       resizedContext.clearRect(0,0,32,32);
       rescaled.push(img);
     }
@@ -91,7 +84,7 @@ class App extends Component {
     var counter_2 = 0;
     var counter_3 = 0;
     var counter_4 = 0;
-    var threshold = 0.9;
+    var threshold = 0.7;
 
 
     var split_images = [];
@@ -102,8 +95,6 @@ class App extends Component {
     var value = [];
     var counter_arr = [];
 
-
-
     for(let i = 1; i < split_count+1; i++){
       split_images = await this.split(i);
       resized_images = await this.rescaled(split_images);
@@ -113,38 +104,28 @@ class App extends Component {
           resized_grayscale_Tensor = tf.browser.fromPixels(resized_images[j]).mean(2).toFloat().expandDims(0).expandDims(-1);
           prediction = model.predict(resized_grayscale_Tensor);
           value = prediction.dataSync();
-          console.log('split', i, 'image len', j, value)
-          console.log('trying', Math.max(...value))
           for (let k = 0; k < value.length; k++){
             switch (i){
               case 1:
                 if (value[k] > threshold){
-                  console.log('greater than thresh',value[k]);
-                  //console.log("in 1")
                   counter_1++;
                   console.log('counter_1',counter_1);
                 }
                 break;
               case 2:
                 if (value[k] > threshold){
-                  //console.log(value);
-                  //console.log("in 2")
                   counter_2++;
                   console.log(counter_2);
                 }
                 break;
               case 3:
                 if (value[k] > threshold){
-                  //console.log(value);
-                  //console.log("in 3")
                   counter_3++;
                   console.log(counter_3);
                 }
                 break;
               case 4:
                 if (value[k] > threshold){
-                  //console.log(value);
-                  //console.log("in 4")
                   counter_4++;
                   console.log(counter_4);
                 }
@@ -162,6 +143,8 @@ class App extends Component {
       var max_counter_index = counter_arr.indexOf(Math.max(...counter_arr));
       var characters = ['0','1','2','3','4','5','6','7','8','9','-','+','*','(',')','y','=']
       var val = []
+      var max_values = [];
+      console.log("max Counter index", max_counter_index);
       switch(max_counter_index){
         case(0):
           var split_images_1 = await this.split(max_counter_index);
@@ -170,6 +153,19 @@ class App extends Component {
             var resized = tf.browser.fromPixels(resized_images_1[j]).mean(2).toFloat().expandDims(0).expandDims(-1);
             var pred = model.predict(resized);
             val = pred.dataSync();
+            
+            var maxi = 0;
+            var pos = 0;
+            
+            for(var k = 0; k < val.length; k++){
+              if(maxi < val[k]){
+                maxi = val[k];
+                pos = k;
+              }
+            }
+
+            if(maxi >= threshold)
+              max_values.push(pos);
           }
           console.log('final prediction:', characters[val.indexOf(Math.max(...val))],'accuracy:',Math.max(...val))
           break;
@@ -180,6 +176,19 @@ class App extends Component {
             var resized= tf.browser.fromPixels(resized_images_2[j]).mean(2).toFloat().expandDims(0).expandDims(-1);
             var pred = model.predict(resized);
             val = pred.dataSync();
+            
+            var maxi = 0;
+            var pos = 0;
+            
+            for(var k = 0; k < val.length; k++){
+              if(maxi < val[k]){
+                maxi = val[k];
+                pos = k;
+              }
+            }
+
+            if(maxi >= threshold)
+              max_values.push(pos);
           }
           console.log('final prediction:', characters[val.indexOf(Math.max(...val))],'accuracy:',Math.max(...val))
           break;
@@ -191,39 +200,56 @@ class App extends Component {
             var resized = tf.browser.fromPixels(resized_images_3[j]).mean(2).toFloat().expandDims(0).expandDims(-1);
             var pred = model.predict(resized);
             val = pred.dataSync();
+
+            var maxi = 0;
+            var pos = 0;
+            
+            for(var k = 0; k < val.length; k++){
+              if(maxi < val[k]){
+                maxi = val[k];
+                pos = k;
+              }
+            }
+
+            if(maxi >= threshold)
+              max_values.push(pos);
           }
           console.log('final prediction:', characters[val.indexOf(Math.max(...val))],'accuracy:',Math.max(...val))
           break;
         case(3):
           var split_images_4 = await this.split(max_counter_index);
-          console.log('trying to split',split_images_4)
           var resized_images_4 = await this.rescaled(split_images_4);
-          console.log('checking resize imag', resized_images_4.length)
           for (let j = 0; j < resized_images_4.length; j++){
             var resized = tf.browser.fromPixels(resized_images_4[j]).mean(2).toFloat().expandDims(0).expandDims(-1);
             var pred = model.predict(resized);
             val = pred.dataSync();
+
+            var maxi = 0;
+            var pos = 0;
+            
+            for(var k = 0; k < val.length; k++){
+              if(maxi < val[k]){
+                maxi = val[k];
+                pos = k;
+              }
+            }
+
+            if(maxi >= threshold)
+              max_values.push(pos);
           }
-          // console.log('max',Math.max(...val))
-          console.log('final prediction:', characters[val.indexOf(Math.max(...val))],'accuracy:',Math.max(...val))
+
           break;
         }
 
-/*       if(counter_arr)
-      this.split(n);
-      value;
-      for(i < images length n){
-        predictions
-        valueAndGrads;
-        for(values){
-          store[] =  index > theshold
+        console.log(max_values);
+        var str = "";
+        for(var i = 0; i < max_values.length; i++){
+          str += characters[max_values[i]] + " ";
         }
-      }
-      ch['1','2'......')'];
 
-      for(store.length)
-        char[store]
-      } */
+        this.setState({ prediction: str});
+
+
     }
 
   moving(e) {
@@ -257,6 +283,7 @@ class App extends Component {
           <img className="t"></img>
         </div>
         <h2>{this.state.prediction}</h2>
+        <h2>{eval(this.state.prediction)}</h2>
       </div>
     );
   }
