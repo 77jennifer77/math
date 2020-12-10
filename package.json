@@ -2,7 +2,7 @@
   "name": "math",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://77jennifer77.github.io/math/",
+  "homepage": "https://77jennifer77.github.io/math",
   "dependencies": {
     "@tensorflow/tfjs": "^2.7.0",
     "@testing-library/jest-dom": "^5.11.6",
