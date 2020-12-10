@@ -153,10 +153,10 @@ class App extends Component {
             var resized = tf.browser.fromPixels(resized_images_1[j]).mean(2).toFloat().expandDims(0).expandDims(-1);
             var pred = model.predict(resized);
             val = pred.dataSync();
-            
+
             var maxi = 0;
             var pos = 0;
-            
+
             for(var k = 0; k < val.length; k++){
               if(maxi < val[k]){
                 maxi = val[k];
@@ -176,10 +176,10 @@ class App extends Component {
             var resized= tf.browser.fromPixels(resized_images_2[j]).mean(2).toFloat().expandDims(0).expandDims(-1);
             var pred = model.predict(resized);
             val = pred.dataSync();
-            
+
             var maxi = 0;
             var pos = 0;
-            
+
             for(var k = 0; k < val.length; k++){
               if(maxi < val[k]){
                 maxi = val[k];
@@ -203,7 +203,7 @@ class App extends Component {
 
             var maxi = 0;
             var pos = 0;
-            
+
             for(var k = 0; k < val.length; k++){
               if(maxi < val[k]){
                 maxi = val[k];
@@ -226,7 +226,7 @@ class App extends Component {
 
             var maxi = 0;
             var pos = 0;
-            
+
             for(var k = 0; k < val.length; k++){
               if(maxi < val[k]){
                 maxi = val[k];
@@ -244,7 +244,8 @@ class App extends Component {
         console.log(max_values);
         var str = "";
         for(var i = 0; i < max_values.length; i++){
-          str += characters[max_values[i]] + " ";
+          if(characters[max_values[i]] != '=')
+            str += characters[max_values[i]];
         }
 
         this.setState({ prediction: str});
