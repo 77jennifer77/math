@@ -101,6 +101,8 @@ class App extends Component {
     var resized_grayscale_Tensor = null;
     var prediction = null;
     var value = [];
+    var counter_arr = [];
+
 
     
     for(let i = 1; i < split_count+1; i++){
@@ -113,7 +115,6 @@ class App extends Component {
           prediction = model.predict(resized_grayscale_Tensor);
           value = prediction.dataSync();
           for (let k = 0; k < value.length; k++){
-
             switch (i){
               case 1: 
                 if (value[k] > threshold){
@@ -122,6 +123,7 @@ class App extends Component {
                   counter_1++;
                   console.log(counter_1);
                 }
+                counter_arr.push(parseInt(counter_1));
                 break;
               case 2: 
                 if (value[k] > threshold){
@@ -130,6 +132,7 @@ class App extends Component {
                   counter_2++;
                   console.log(counter_2);
                 }
+                counter_arr.push(parseInt(counter_2));
                 break;
               case 3: 
                 if (value[k] > threshold){
@@ -138,6 +141,7 @@ class App extends Component {
                   counter_3++;
                   console.log(counter_3);
                 }
+                counter_arr.push(parseInt(counter_3));
                 break;
               case 4: 
                 if (value[k] > threshold){
@@ -146,13 +150,35 @@ class App extends Component {
                   counter_4++;
                   console.log(counter_4);
                 }
+                counter_arr.push(parseInt(counter_4));
                 break;
             }      
           }
         }
       }
+      
+      max_counter_index = counter_arr.findIndex(Math.max(counter_arr));
 
-      /*if(counter_1_max)
+      switch(max_counter_index){
+        case(0): 
+          var split_images_1 = this.split(max_counter_index);
+          var resized_images_1 = await this.rescaled(split_images_1);
+          
+        case(1):
+          var split_images_2 = this.split(max_counter_index);
+          var resized_images_2 = await this.rescaled(split_images_2);
+
+        case(2):
+          var split_images_3 = this.split(max_counter_index);
+          var resized_images_3 = await this.rescaled(split_images_3);
+
+        case(3):
+          var split_images_4 = this.split(max_counter_index);
+          var resized_images_4 = await this.rescaled(split_images_4);
+
+        }
+      
+/*       if(counter_arr)
       this.split(n);
       value;
       for(i < images length n){
@@ -162,15 +188,12 @@ class App extends Component {
           store[] =  index > theshold
         }
       }
-
       ch['1','2'......')'];
 
       for(store.length)
-        char[store]*/
-    
-
-    
-  }
+        char[store]
+      } */
+    }
 
   moving(e) {
     const canvas = this.canvasRef.current;
