@@ -157,7 +157,7 @@ class App extends Component {
         }
       }
       
-      max_counter_index = counter_arr.findIndex(Math.max(counter_arr));
+      var max_counter_index = counter_arr.indexOf(Math.max(counter_arr));
 
       switch(max_counter_index){
         case(0): 
