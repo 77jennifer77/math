@@ -242,9 +242,11 @@ class App extends Component {
         }
 
         console.log(max_values);
+        
         var str = "";
         for(var i = 0; i < max_values.length; i++){
-          str += characters[max_values[i]] + " ";
+          if(characters[max_values[i]] != '=')
+            str += characters[max_values[i]];
         }
 
         this.setState({ prediction: str});
