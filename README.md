@@ -1,4 +1,4 @@
-# math
+# My Math Solver
 AI Math Solver Frontend
 Jennifer Chiang - 012639224
 Alyssa Morada - 012391405
@@ -6,6 +6,8 @@ Marcos Herrera - 011972818
 Enrique Hernandez - 011438973
 	
 ReadMe: Image Recognition Math Solver
+
+![image](https://user-images.githubusercontent.com/13209694/113368246-20ddca80-9313-11eb-85db-4af9c7c23cc5.png)
 
 Github:
 https://github.com/Inh3ritance/CS-4800-Math-Solver 
